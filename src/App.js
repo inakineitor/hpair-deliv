@@ -18,11 +18,12 @@ import firebase from 'firebase/compat/app';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import './App.css';
-import BasicTable from './components/BasicTable';
-import EntryModal from './components/EntryModal';
-import { mainListItems } from './components/listItems';
-import { db, SignInScreen } from './utils/firebase';
-import { emptyEntry } from './utils/mutations';
+import { BasicTable } from './components/BasicTable.tsx';
+import { EntryModal } from './components/EntryModal.tsx';
+import { MainListItems } from './components/MainListItems.tsx';
+import { db } from './utils/firebase.ts';
+import { SignInScreen } from './components/SignInScreen/SignInScreen.tsx';
+import { emptyEntry } from './utils/mutations.ts';
 
 // MUI styling constants
 
@@ -221,7 +222,9 @@ export default function App() {
             </IconButton>
           </Toolbar>
           <Divider />
-          <List component="nav">{mainListItems}</List>
+          <List component="nav">
+            <MainListItems />
+          </List>
         </Drawer>
         <Box
           component="main"

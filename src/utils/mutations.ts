@@ -1,4 +1,3 @@
-import { db } from './firebase';
 import {
   collection,
   addDoc,
@@ -6,6 +5,8 @@ import {
   updateDoc,
   deleteDoc,
 } from 'firebase/firestore';
+
+import { db } from './firebase.ts';
 
 // All functions for database mutations are stored here
 

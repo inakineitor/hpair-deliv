@@ -5,12 +5,13 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { getCategory } from '../utils/categories';
-import EntryModal from './EntryModal';
+import { getCategory } from '../utils/categories.ts';
+import { EntryModal } from './EntryModal.tsx';
 
-// Table component that displays entries on home screen
-
-export default function BasicTable({ entries }) {
+/**
+ * Table component that displays entries on home screen
+ */
+export function BasicTable({ entries }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -39,10 +40,7 @@ export default function BasicTable({ entries }) {
               <TableCell align="right">
                 {getCategory(entry.category).name}
               </TableCell>
-              <TableCell
-                sx={{ 'padding-top': 0, 'padding-bottom': 0 }}
-                align="right"
-              >
+              <TableCell sx={{ paddingTop: 0, paddingBottom: 0 }} align="right">
                 <EntryModal entry={entry} type="edit" />
               </TableCell>
             </TableRow>

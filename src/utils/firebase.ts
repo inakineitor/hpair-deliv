@@ -3,10 +3,6 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getFirestore } from 'firebase/firestore';
-import StyledFirebaseAuth from '../components/StyledFirebaseAuth.tsx';
-
-// google sign in
-import { GoogleAuthProvider } from 'firebase/auth';
 
 // ! DO NOT CHANGE THIS FILE.
 
@@ -21,31 +17,10 @@ const firebaseConfig = {
   measurementId: 'G-838GGW845J',
 };
 
-// Configure FirebaseUI.
-const uiConfig = {
-  // Popup signin flow rather than redirect flow.
-  signInFlow: 'popup',
-  // We will display Github as auth providers.
-  signInOptions: [GoogleAuthProvider.PROVIDER_ID],
-  callbacks: {
-    // Avoid redirects after sign-in.
-    signInSuccessWithAuthResult: () => false,
-  },
-};
-
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
 // Export Firestore database
 export const db = getFirestore();
 
-// Export FirebaseUI signin screen
-export function SignInScreen() {
-  return (
-    <div>
-      <h1>Sign in to Links for Climate Good</h1>
-      <p>Please sign-in with your Googe account:</p>
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-    </div>
-  );
-}
+export default firebase;

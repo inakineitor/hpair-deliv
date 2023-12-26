@@ -21,7 +21,7 @@ interface Props {
   className?: string;
 }
 
-const StyledFirebaseAuth = ({
+export const StyledFirebaseAuth = ({
   uiConfig,
   firebaseAuth,
   className,
@@ -58,5 +58,3 @@ const StyledFirebaseAuth = ({
 
   return <div className={className} ref={elementRef} />;
 };
-
-export default StyledFirebaseAuth;

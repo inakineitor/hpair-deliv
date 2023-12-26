@@ -12,12 +12,13 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useState } from 'react';
-import { categories } from '../utils/categories';
-import { addEntry, deleteEntry, updateEntry } from '../utils/mutations';
+import { categories } from '../utils/categories.ts';
+import { addEntry, deleteEntry, updateEntry } from '../utils/mutations.ts';
 
-// Modal component for BOTH adding and editing entries
-
-export default function EntryModal({ entry, type, user }) {
+/**
+ * Modal component for BOTH adding and editing entries
+ */
+export function EntryModal({ entry, type, user }) {
   // State variables for modal status
 
   const [open, setOpen] = useState(false);
