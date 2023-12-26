@@ -10,13 +10,13 @@ import MuiDrawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
-import Stack from "@mui/material/Stack";
+import Stack from '@mui/material/Stack';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import firebase from 'firebase/compat/app';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import './App.css';
 import BasicTable from './components/BasicTable';
 import EntryModal from './components/EntryModal';
@@ -46,38 +46,37 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    '& .MuiDrawer-paper': {
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      width: drawerWidth,
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  '& .MuiDrawer-paper': {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    boxSizing: 'border-box',
+    ...(!open && {
+      overflowX: 'hidden',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        duration: theme.transitions.duration.leavingScreen,
       }),
-      boxSizing: 'border-box',
-      ...(!open && {
-        overflowX: 'hidden',
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        width: theme.spacing(7),
-        [theme.breakpoints.up('sm')]: {
-          width: theme.spacing(9),
-        },
-      }),
-    },
-  }),
-);
+      width: theme.spacing(7),
+      [theme.breakpoints.up('sm')]: {
+        width: theme.spacing(9),
+      },
+    }),
+  },
+}));
 
 const mdTheme = createTheme();
 
 // App.js is the homepage and handles top-level functions like user auth.
 
 export default function App() {
-
   // User authentication functionality. Would not recommend changing.
 
   const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
@@ -85,12 +84,14 @@ export default function App() {
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
-    const unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
-      setIsSignedIn(!!user);
-      if (!!user) {
-        setcurrentUser(user);
-      }
-    });
+    const unregisterAuthObserver = firebase
+      .auth()
+      .onAuthStateChanged((user) => {
+        setIsSignedIn(!!user);
+        if (!!user) {
+          setcurrentUser(user);
+        }
+      });
     return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
 
@@ -112,14 +113,16 @@ export default function App() {
     // from the listener
 
     // ! Database query filters entries for current user. DO NOT CHANGE, editing this query may cause it to fail.
-    const q = currentUser?.uid ? query(collection(db, "entries"), where("userid", "==", currentUser.uid)) : collection(db, "entries");
+    const q = currentUser?.uid
+      ? query(collection(db, 'entries'), where('userid', '==', currentUser.uid))
+      : collection(db, 'entries');
 
     onSnapshot(q, (snapshot) => {
       // Using JS spread operator to convert all of doc.data object properties
       // into a list of properties, and adding our own property with id.
       // this is done because doc id is not in doc.data()
-      setEntries(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
-    })
+      setEntries(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
   }, [currentUser]);
 
   // Main content of homescreen. This is displayed conditionally from user auth status
@@ -137,67 +140,67 @@ export default function App() {
             <BasicTable entries={entries} />
           </Grid>
         </Grid>
-      )
-    } else return (
-      <SignInScreen></SignInScreen>
-    )
+      );
+    } else return <SignInScreen></SignInScreen>;
   }
 
   const MenuBar = () => {
-    return(
-    <AppBar position="absolute" open={open}>
-          <Toolbar
+    return (
+      <AppBar position="absolute" open={open}>
+        <Toolbar
+          sx={{
+            pr: '24px', // keep right padding when drawer closed
+          }}
+        >
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleDrawer}
             sx={{
-              pr: '24px', // keep right padding when drawer closed
+              marginRight: '36px',
+              ...(open && { display: 'none' }),
             }}
           >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              Outreach Contacts
-            </Typography>
-            <Typography
-              component="h1"
-              variant="body1"
-              color="inherit"
-              noWrap
-              sx={{
-                marginRight: '20px',
-                display: isSignedIn ? 'inline' : 'none'
-              }}
-            >
-              Signed in as {firebase.auth().currentUser?.displayName}
-            </Typography>
-            <Button variant="contained" size="small"
-              sx={{
-                marginTop: '5px',
-                marginBottom: '5px',
-                display: isSignedIn ? 'inline' : 'none'
-              }}
-              onClick={() => firebase.auth().signOut()}
-            >
-              Log out
-            </Button>
-          </Toolbar>
-        </AppBar>
-    )
-  }
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            sx={{ flexGrow: 1 }}
+          >
+            Outreach Contacts
+          </Typography>
+          <Typography
+            component="h1"
+            variant="body1"
+            color="inherit"
+            noWrap
+            sx={{
+              marginRight: '20px',
+              display: isSignedIn ? 'inline' : 'none',
+            }}
+          >
+            Signed in as {firebase.auth().currentUser?.displayName}
+          </Typography>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              marginTop: '5px',
+              marginBottom: '5px',
+              display: isSignedIn ? 'inline' : 'none',
+            }}
+            onClick={() => firebase.auth().signOut()}
+          >
+            Log out
+          </Button>
+        </Toolbar>
+      </AppBar>
+    );
+  };
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -218,9 +221,7 @@ export default function App() {
             </IconButton>
           </Toolbar>
           <Divider />
-          <List component="nav">
-            {mainListItems}
-          </List>
+          <List component="nav">{mainListItems}</List>
         </Drawer>
         <Box
           component="main"
