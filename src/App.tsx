@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { useState } from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Box from '@mui/material/Box';
@@ -11,8 +10,6 @@ import List from '@mui/material/List';
 import Toolbar from '@mui/material/Toolbar';
 
 import './App.css';
-
-import { default as firebase, db } from './utils/firebase.ts';
 
 import { MainListItems } from './components/MainListItems.tsx';
 import { SignInScreen } from './components/SignInScreen/SignInScreen.tsx';

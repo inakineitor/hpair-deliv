@@ -1,3 +1,7 @@
+import * as React from 'react';
+import { useState } from 'react';
+import isEmail from 'validator/es/lib/isEmail';
+
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -10,8 +14,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import * as React from 'react';
-import { useState } from 'react';
+
 import { categories } from '../utils/categories.ts';
 import { addEntry, deleteEntry, updateEntry } from '../utils/mutations.ts';
 
@@ -24,8 +27,30 @@ export function EntryModal({ entry, type, user }) {
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [name, setName] = useState(entry.name);
-  const [email, setEmail] = useState(entry.email);
+  /* Form Validation */
+  // TODO Moved to unmanaged using Formik or managed using React Hook Form
+  const useValidationFunction = (
+    setFunc: (val: string) => void,
+    validator: (val: string) => string,
+  ): [(val: string) => void, string] => {
+    const [errorMsg, setErrorMsg] = useState('');
+    const newSetFunc = (val: string): void => {
+      setErrorMsg(validator(val));
+      setFunc(val);
+    };
+    return [newSetFunc, errorMsg];
+  };
+
+  const [name, rawSetName] = useState(entry.name);
+  const [setName, nameErrorMsg] = useValidationFunction(
+    rawSetName,
+    (val: string) => (val === '' ? 'Name cannot be empty' : ''),
+  );
+  const [email, rawSetEmail] = useState(entry.email);
+  const [setEmail, emailErrorMsg] = useValidationFunction(
+    rawSetEmail,
+    (val: string) => (!isEmail(val) ? 'Email is not valid' : ''),
+  );
   const [description, setDescription] = useState(entry.description);
   const [category, setCategory] = React.useState(entry.category);
 
@@ -54,6 +79,12 @@ export function EntryModal({ entry, type, user }) {
       category: category,
       id: entry.id,
     };
+
+    if (nameErrorMsg !== '' || emailErrorMsg !== '') {
+      alert('Please fix the errors in the form before submitting.');
+      return;
+    }
+
     updateEntry(updatedEntry).catch(console.error);
     handleClose();
   };
@@ -67,6 +98,11 @@ export function EntryModal({ entry, type, user }) {
       category: category,
       userid: user?.uid,
     };
+
+    if (nameErrorMsg !== '' || emailErrorMsg !== '') {
+      alert('Please fix the errors in the form before submitting.');
+      return;
+    }
 
     addEntry(newEntry).catch(console.error);
     handleClose();
@@ -140,6 +176,8 @@ export function EntryModal({ entry, type, user }) {
             InputProps={{
               readOnly: type === 'edit' ? !isEditing : false,
             }}
+            error={nameErrorMsg !== ''}
+            helperText={nameErrorMsg !== '' ? nameErrorMsg : undefined}
           />
           <TextField
             margin="normal"
@@ -155,6 +193,8 @@ export function EntryModal({ entry, type, user }) {
             InputProps={{
               readOnly: type === 'edit' ? !isEditing : false,
             }}
+            error={emailErrorMsg !== ''}
+            helperText={emailErrorMsg !== '' ? emailErrorMsg : undefined}
           />
           <TextField
             margin="normal"

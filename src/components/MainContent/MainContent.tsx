@@ -1,21 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import Fuse from 'fuse.js';
 
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 
-import { default as firebase, db } from '../../utils/firebase.ts';
+import { db } from '../../utils/firebase.ts';
 import { emptyEntry } from '../../utils/mutations.ts';
 
 import { BasicTable } from '../BasicTable.tsx';
 import { EntryModal } from '../EntryModal.tsx';
 import { SearchBar } from '../SearchBar/SearchBar.tsx';
 import { useAuthContext } from '../../contexts/auth-context.tsx';
-import Fuse from 'fuse.js';
 
 export function MainContent() {
   const { user } = useAuthContext();
 
+  /* Data Fetching */
   // Data fetching from DB. Would not recommend changing.
   // Reference video for snapshot functionality https://www.youtube.com/watch?v=ig91zc-ERSE
   const [entries, setEntries] = useState([]);
